@@ -14,24 +14,23 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Bot extends TelegramLongPollingBot
-{
+public class Bot extends TelegramLongPollingBot {
     public static void main( String[] args ) throws TelegramApiException {
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-        try{
+        try{// регистрация Бота
             telegramBotsApi.registerBot(new Bot());
-        } catch (TelegramApiException e) {
+        } catch (TelegramApiException e) {// Обработка исключений
             throw new RuntimeException(e);
         }
     }
 
-    public void sendMsg(Message message, String text){
+    public void sendMsg(Message message, String text){// Метод в котором описывается что будет отвечать бот
         SendMessage sendMessage = new SendMessage();
         sendMessage.enableMarkdown(true);
-        sendMessage.setChatId(message.getChatId().toString());
-        sendMessage.setReplyToMessageId(message.getMessageId());
+        sendMessage.setChatId(message.getChatId().toString());// Установка ID чтобы бот понимал кому отвечать
+        sendMessage.setReplyToMessageId(message.getMessageId());// На какое конкретное сообщение бот должен ответить
         sendMessage.setText(text);
-        try{
+        try{// Отправка сообщения
             setButtons(sendMessage);
             execute(sendMessage);
 
@@ -48,8 +47,8 @@ public class Bot extends TelegramLongPollingBot
         return botToken;
     }
 
-    public void onUpdateReceived(Update update) {
-        Message message = update.getMessage();
+    public void onUpdateReceived(Update update) {// Метод для приема сообщений
+        Message message = update.getMessage();// Описываем что делать при получении сообщения
         if(message != null && message.hasText()){
             switch(message.getText()){
                 case "/help":
@@ -62,7 +61,7 @@ public class Bot extends TelegramLongPollingBot
             }
         }
     }
-    public void setButtons(SendMessage sendMessage){
+    public void setButtons(SendMessage sendMessage){ //Реализация клавиатуры(чтобы та отображалась ввиде кнопочек снизу)
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         sendMessage.setReplyMarkup(replyKeyboardMarkup);
         replyKeyboardMarkup.setSelective(true);
